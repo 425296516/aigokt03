@@ -8,15 +8,21 @@ import com.aigo.kt03.business.obj.net.NetGetLearnCodeObject;
 import com.aigo.kt03.business.obj.net.NetKT03DeviceInfo;
 import com.aigo.kt03.business.obj.net.NetResultObject;
 import com.aigo.kt03.business.obj.ui.AirIndex;
+import com.aigo.kt03.business.obj.ui.AirIndexObject;
 import com.aigo.kt03.business.obj.ui.AirQuality;
 import com.aigo.kt03.business.obj.ui.KT03DeviceInfo;
 import com.aigo.kt03.business.obj.ui.LearnCodeObject;
 import com.aigo.kt03.business.obj.ui.Result;
 import com.aigo.kt03.business.obj.ui.ResultObject;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zhangcirui on 15/7/16.
@@ -107,10 +113,12 @@ public class KT03Adapter {
         airIndex.setPm25(netAirIndex.getPm25());
         airIndex.setFormadehyde(netAirIndex.getFormadehyde());
         airIndex.setTime(netAirIndexObject.getPubtime());
-        airIndex.setIaq("178");
-        airIndex.setIaqQuality(iaqToComfort("178"));
+        airIndex.setIaq(getIaq(netAirIndexObject));
+        airIndex.setIaqQuality(iaqToComfort(getIaq(netAirIndexObject)));
         return airIndex;
     }
+
+
 
     public AirQuality getAirIndexToAirQuality(AirIndex netAirIndex) {
 
@@ -123,8 +131,8 @@ public class KT03Adapter {
         airQuality.setPm25(pm25ToComfort(netAirIndex.getPm25()));
         airQuality.setFormadehyde(formadehydeToComfort(netAirIndex.getFormadehyde()));
         airQuality.setTime(netAirIndex.getTime());
-        airQuality.setIaq("178");
-        airQuality.setIaqQuality(iaqToComfort("178"));
+        airQuality.setIaq(netAirIndex.getIaq());
+        airQuality.setIaqQuality(iaqToComfort(netAirIndex.getIaq()));
 
         return airQuality;
     }
@@ -142,11 +150,108 @@ public class KT03Adapter {
         airQuality.setPm25(pm25ToComfort(netAirIndex.getPm25()));
         airQuality.setFormadehyde(formadehydeToComfort(netAirIndex.getFormadehyde()));
         airQuality.setTime(netAirIndexObject.getPubtime());
-        airQuality.setIaq("178");
-        airQuality.setIaqQuality(iaqToComfort("178"));
+        airQuality.setIaq(getIaq(netAirIndexObject));
+        airQuality.setIaqQuality(iaqToComfort(getIaq(netAirIndexObject)));
 
         return airQuality;
     }
+
+    public String getIaq(NetAirIndexObject netAirIndexObject){
+
+        NetAirIndex netAirIndex = netAirIndexObject.getData();
+        long  currentTime = netAirIndexObject.getPubtime();
+
+        float co2 = Float.parseFloat(netAirIndex.getCo2());
+        float formadehyde = Float.parseFloat(netAirIndex.getFormadehyde());
+        float humidity = Float.parseFloat(netAirIndex.getHumidity());
+        float noise = Float.parseFloat(netAirIndex.getNoise());
+        float voc = Float.parseFloat(netAirIndex.getVoc());
+        float tem = Float.parseFloat(netAirIndex.getTemperature());
+        float pm25 = Float.parseFloat(netAirIndex.getPm25());
+
+        List<Float> list = new ArrayList<Float>();
+
+        float c = 0;
+        float f = 0;
+        float h = 0;
+        float n = 0;
+        float v = 0;
+        float p = 0;
+        float t = 0;
+
+        if(co2<350){
+            c = co2/350;
+        }else if(co2<650){
+            c = co2/650;
+        }else if(co2<1000){
+            c = co2/1000;
+        }else if(co2<1800){
+            c = co2/1800;
+        }
+
+        list.add(c);
+
+        if(formadehyde<0.025){
+            f = formadehyde/(float)0.025;
+        }else if(formadehyde<0.075){
+            f = formadehyde/(float)0.075;
+        }else if(formadehyde<0.15){
+            f = formadehyde/(float)0.15;
+        }else if(formadehyde<0.35){
+            f = formadehyde/(float)0.35;
+        }
+
+        list.add(f);
+
+        if(humidity > 50 && humidity<60){
+            h = humidity/55;
+        }else if(humidity > 55 && humidity<65){
+            h = humidity/60;
+        }
+
+        list.add(h);
+
+        if(noise < 45){
+            n = noise/45;
+        }else if(noise< 55){
+            n = noise/55;
+        }
+        list.add(n);
+
+        if(voc<0.2){
+            v = voc/(float)0.2;
+        }else if(voc < 0.4){
+            v = voc/(float)0.4;
+        }else if(voc < 0.6){
+            v = voc/(float)0.6;
+        }else if(voc < 0.8){
+            v = voc/(float)0.8;
+        }
+        list.add(v);
+
+        if(pm25>150){
+            p = pm25/250;
+        }else if(pm25>50){
+            p = pm25/150;
+        }else if(pm25>0){
+            p = pm25/50;
+        }
+        list.add(p);
+        if(tem > 21 && tem <23){
+            t = tem/(float)22.5;
+        }
+        list.add(t);
+
+
+        float max = Collections.max(list);
+
+        float iaq = (float)Math.sqrt(max * (c + f + h + n + v + p + t));
+
+        DecimalFormat decimalFormat = new DecimalFormat("##0.00");
+
+        return decimalFormat.format(iaq);
+    }
+
 
     public LearnCodeObject getLearnCodeObject(NetGetLearnCodeObject netGetLearnCodeObject) {
 
@@ -163,24 +268,21 @@ public class KT03Adapter {
     }
 
     public String iaqToComfort(String iaq){
-        int val = Integer.parseInt(iaq);
-        if(val>0 && val<50){
-            return "优";
+        float val = Float.parseFloat(iaq);
+        if(val <= 0.49){
+            return "清洁";
         }
-        if(val>51 && val<100){
-            return "良";
+        if(val>=0.50 && val<=0.99){
+            return "未污染";
         }
-        if(val>101 && val<150){
+        if(val>=1.00 && val<=1.49){
             return "轻度污染";
         }
-        if(val>151 && val<200){
+        if(val>=1.50 && val<=1.99){
             return "中度污染";
         }
-        if(val>201 && val<300){
+        if(val>=2.00){
             return "重度污染";
-        }
-        if(val>300){
-            return "严重污染";
         }
 
         return "";
@@ -290,6 +392,8 @@ public class KT03Adapter {
 
         return "";
     }
+
+
 
 
     public String humidityToComfort(String humidity){
