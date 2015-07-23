@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="170dp"
+    android:background="@drawable/drw_2_weather_popup_window_bg"
+    android:orientation="vertical"
+    android:layout_gravity="center">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="提示"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d7d7d7"
+        android:layout_marginTop="16dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="#797979"
+        android:text="当前电器是否开启"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <Button
+            android:id="@+id/btn_user_home_cancel"
+            android:layout_width="108dp"
+            android:layout_height="40dp"
+            android:textColor="#ffffff"
+
+            android:text="否"/>
+        <Button
+            android:id="@+id/btn_user_home_makesure"
+            android:layout_width="108dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:textColor="#ffffff"
+
+            android:text="是"/>
+    </LinearLayout>
+
+</LinearLayout>
