@@ -144,14 +144,14 @@ public class KT03Module {
                         Log.d(TAG, "33333");
                         mListener.onSuccess(airIndex);
                     } else {
-                        Log.d(TAG, "4444");
+                        Log.d(TAG, "44444");
                         listener.onSuccess(airIndex);
                     }
                 }
 
                 @Override
                 public void onFailure(String err) {
-
+                        listener.onFailure(err);
                 }
             });
         }

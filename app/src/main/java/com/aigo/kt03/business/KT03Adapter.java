@@ -179,69 +179,112 @@ public class KT03Adapter {
         float p = 0;
         float t = 0;
 
-        if(co2<350){
+        if(co2<=350){
             c = co2/350;
-        }else if(co2<650){
-            c = co2/650;
+        }else if(co2<=600){
+            c = co2/600;
         }else if(co2<1000){
             c = co2/1000;
-        }else if(co2<1800){
-            c = co2/1800;
+        }else if(co2<1500){
+            c = co2/1500;
+        }else{
+            c = co2/1500;
         }
 
         list.add(c);
 
         if(formadehyde<0.025){
             f = formadehyde/(float)0.025;
-        }else if(formadehyde<0.075){
-            f = formadehyde/(float)0.075;
-        }else if(formadehyde<0.15){
-            f = formadehyde/(float)0.15;
-        }else if(formadehyde<0.35){
-            f = formadehyde/(float)0.35;
+        }else if(formadehyde<0.04){
+            f = formadehyde/(float)0.04;
+        }else if(formadehyde<0.125){
+            f = formadehyde/(float)0.125;
+        }else if(formadehyde<0.275){
+            f = formadehyde/(float)0.275;
+        }else{
+            f = formadehyde/(float)0.275;
         }
 
         list.add(f);
 
-        if(humidity > 50 && humidity<60){
-            h = humidity/55;
-        }else if(humidity > 55 && humidity<65){
-            h = humidity/60;
-        }
 
-        list.add(h);
 
         if(noise < 45){
             n = noise/45;
+        }else if(noise< 50){
+            n = noise/50;
         }else if(noise< 55){
             n = noise/55;
+        }else if(noise< 65){
+            n = noise/65;
+        }else{
+            n = noise/65;
         }
+
         list.add(n);
 
-        if(voc<0.2){
-            v = voc/(float)0.2;
+        if(voc<0.3){
+            v = voc/(float)0.3;
         }else if(voc < 0.4){
             v = voc/(float)0.4;
-        }else if(voc < 0.6){
-            v = voc/(float)0.6;
-        }else if(voc < 0.8){
+        }else if(voc <= 0.8){
+            v = voc/(float)0.8;
+        }else {
             v = voc/(float)0.8;
         }
         list.add(v);
 
-        if(pm25>150){
-            p = pm25/250;
-        }else if(pm25>50){
-            p = pm25/150;
-        }else if(pm25>0){
-            p = pm25/50;
+        if(pm25<0.025){
+            p = pm25/(float)0.025;
+        }else if(pm25<=0.075){
+            p = pm25/(float)0.075;
+        }else if(pm25<0.15){
+            p = pm25/(float)0.15;
+        }else if(pm25<0.35){
+            p = pm25/(float)0.35;
+        }else{
+            p = pm25/(float)0.35;
         }
-        list.add(p);
-        if(tem > 21 && tem <23){
-            t = tem/(float)22.5;
-        }
-        list.add(t);
 
+        list.add(p);
+
+        if(tem>20 && tem<22){
+            t = tem/(float)22;
+        }else if(tem > 22 && tem <26){
+            t = tem/(float)26;
+        }else if(tem > 27 && tem <29){
+            t = tem/(float)29;
+        }else if(tem > 29 && tem <32){
+            t = tem/(float)32;
+        }else if(tem > 32 && tem <35){
+            t = tem/(float)35;
+        }else{
+            t = tem/36;
+        }
+
+
+        list.add(t);
+        if(humidity > 0 && humidity<35){
+            h = humidity/35;
+        }else if(humidity > 35 && humidity<40){
+            h = humidity/40;
+        }else if(humidity > 40 && humidity<45){
+            h = humidity/45;
+        }else if(humidity > 45 && humidity<50){
+            h = humidity/50;
+        }else if(humidity > 50 && humidity<55){
+            h = humidity/55;
+        }else if(humidity > 55 && humidity<65){
+            h = humidity/65;
+        }else if(humidity > 65 && humidity<70){
+            h = humidity/70;
+        }else if(humidity > 70 && humidity<75){
+            h = humidity/75;
+        }else if(humidity > 75 && humidity<100){
+            h = humidity/100;
+        }
+
+        list.add(h);
 
         float max = Collections.max(list);
 
